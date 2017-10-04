@@ -1,0 +1,11 @@
+{
+  "name": "stream",
+  "version": "0.0.1",
+  "repo": "MobiusHorizons/stream_module",
+  "description": "Generic Stream interface for C/CModules with native file implementation",
+  "keywords": ["stream", "mpp", "interface"],
+  "license": "MIT",
+  "src": ["stream.module.c", "file.module.c", "stream.c", "stream.h", "file.c", "file.h"]
+}
+
+
