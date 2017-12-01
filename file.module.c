@@ -37,41 +37,48 @@ static ssize_t file_write(void * ctx, const void * buf, size_t nbyte, stream.err
   return e;
 }
 
+static ssize_t file_close(void * ctx, stream.error_t * error) {
+  int * fd = (int*)ctx;
+  int e = global.close(*fd);
+  if (e < 0 && error != NULL) {
+    error->code    = errno;
+    error->message = strerror(error->code);
+  }
+  global.free(ctx);
+  return e;
+}
 
-export stream.t new(int fd) {
+
+export stream.t * new(int fd) {
   int * descriptor = malloc(sizeof(int));
   *descriptor = fd;
 
-  stream.t s = {
-    .ctx   = descriptor,
-    .read  = file_read,
-    .write = file_write,
-    .pipe  = NULL,
-    .error = {0},
-    .type  = type(),
-  };
+  stream.t * s = malloc(sizeof(stream.t));
+
+  s->ctx   = descriptor;
+  s->read  = file_read;
+  s->write = file_write;
+  s->pipe  = NULL;
+  s->close = file_close;
+  s->type  = type();
+
+  s->error.code    = 0;
+  s->error.message = NULL;
+
   return s;
 }
 
-export stream.t open(const char * path, int oflag) {
+export int descriptor(stream.t * s) {
+  if (s == NULL || s->type != type()) return -1;
+  int fd = *(int*)s->ctx;
+  return fd;
+}
+
+export stream.t * open(const char * path, int oflag) {
   int fd = global.open(path, oflag);
   if ( fd < 0 ) {
-    stream.t s = {0};
-    s.error.code    = errno;
-    s.error.message = strerror(s.error.code);
+    return stream.error(NULL, errno, strerror(errno));
   }
 
-
-  int * descriptor = malloc(sizeof(int));
-  *descriptor = fd;
-
-  stream.t s = {
-    .ctx   = descriptor,
-    .read  = file_read,
-    .write = file_write,
-    .pipe  = NULL,
-    .error = {0},
-    .type  = type(),
-  };
-  return s;
+  return new(fd);
 }
