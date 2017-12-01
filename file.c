@@ -7,7 +7,6 @@
 
 
 #include "./stream.h"
-
 static int _type;
 
 int file_type() {
@@ -38,41 +37,48 @@ static ssize_t file_write(void * ctx, const void * buf, size_t nbyte, stream_err
   return e;
 }
 
+static ssize_t file_close(void * ctx, stream_error_t * error) {
+  int * fd = (int*)ctx;
+  int e = close(*fd);
+  if (e < 0 && error != NULL) {
+    error->code    = errno;
+    error->message = strerror(error->code);
+  }
+  free(ctx);
+  return e;
+}
 
-stream_t file_new(int fd) {
+
+stream_t * file_new(int fd) {
   int * descriptor = malloc(sizeof(int));
   *descriptor = fd;
 
-  stream_t s = {
-    .ctx   = descriptor,
-    .read  = file_read,
-    .write = file_write,
-    .pipe  = NULL,
-    .error = {0},
-    .type  = file_type(),
-  };
+  stream_t * s = malloc(sizeof(stream_t));
+
+  s->ctx   = descriptor;
+  s->read  = file_read;
+  s->write = file_write;
+  s->pipe  = NULL;
+  s->close = file_close;
+  s->type  = file_type();
+
+  s->error.code    = 0;
+  s->error.message = NULL;
+
   return s;
 }
 
-stream_t file_open(const char * path, int oflag) {
+int file_descriptor(stream_t * s) {
+  if (s == NULL || s->type != file_type()) return -1;
+  int fd = *(int*)s->ctx;
+  return fd;
+}
+
+stream_t * file_open(const char * path, int oflag) {
   int fd = open(path, oflag);
   if ( fd < 0 ) {
-    stream_t s = {0};
-    s.error.code    = errno;
-    s.error.message = strerror(s.error.code);
+    return stream_error(NULL, errno, strerror(errno));
   }
 
-
-  int * descriptor = malloc(sizeof(int));
-  *descriptor = fd;
-
-  stream_t s = {
-    .ctx   = descriptor,
-    .read  = file_read,
-    .write = file_write,
-    .pipe  = NULL,
-    .error = {0},
-    .type  = file_type(),
-  };
-  return s;
+  return file_new(fd);
 }
