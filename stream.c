@@ -4,11 +4,12 @@
 
 
 #include <errno.h>
-#include <stdio.h>
 #include <unistd.h>
 #include <stdarg.h>
 #include <string.h>
 #include <strings.h>
+#define _GNU_SOURCE
+#include <stdio.h>
 
 typedef struct {
   const char * message;
