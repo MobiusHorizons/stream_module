@@ -1,6 +1,6 @@
 {
   "name": "stream",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repo": "MobiusHorizons/stream_module",
   "description": "Generic Stream interface for C/CModules with native file implementation",
   "keywords": ["stream", "mpp", "interface"],
