@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#
+
 #include <fcntl.h>
 
 
-#include "./stream.h"
+#include "stream.h"
 static int _type;
 
 int file_type() {
@@ -75,7 +75,7 @@ int file_descriptor(stream_t * s) {
 }
 
 stream_t * file_open(const char * path, int oflag) {
-  int fd = open(path, oflag);
+  int fd = open(path, oflag, 0666);
   if ( fd < 0 ) {
     return stream_error(NULL, errno, strerror(errno));
   }

@@ -28,6 +28,7 @@ stream_t * stream_error(stream_t * s, int code, const char * message);
 ssize_t stream_read(stream_t * s, void * buf, size_t nbyte);
 ssize_t stream_write(stream_t * s, const void * buf, size_t nbyte);
 ssize_t stream_pipe(stream_t * from, stream_t * to);
+ssize_t stream_printf(stream_t * s, char * fmt, ...);
 ssize_t stream_close(stream_t * s);
 
 #endif

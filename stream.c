@@ -3,9 +3,12 @@
 #include <stdlib.h>
 
 
+#include <errno.h>
 #include <stdio.h>
-
 #include <unistd.h>
+#include <stdarg.h>
+#include <string.h>
+#include <strings.h>
 
 typedef struct {
   const char * message;
@@ -97,6 +100,21 @@ ssize_t stream_pipe(stream_t * from, stream_t * to) {
 
   free(buffer);
   return len;
+}
+
+ssize_t stream_printf(stream_t * s, char * fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  char * buf;
+  ssize_t length = vasprintf(&buf, fmt, args);
+
+  if (length < 0) {
+    s->error.code    = errno;
+    s->error.message = strerror(s->error.code);
+    return length;
+  }
+
+  return stream_write(s, buf, length);
 }
 
 ssize_t stream_close(stream_t * s) {

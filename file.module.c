@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#export {
+export {
 #include <fcntl.h>
 }
 
@@ -75,7 +75,7 @@ export int descriptor(stream.t * s) {
 }
 
 export stream.t * open(const char * path, int oflag) {
-  int fd = global.open(path, oflag);
+  int fd = global.open(path, oflag, 0666);
   if ( fd < 0 ) {
     return stream.error(NULL, errno, strerror(errno));
   }
