@@ -1,5 +1,5 @@
-#ifndef _stream_
-#define _stream_
+#ifndef _package_stream_
+#define _package_stream_
 
 #include <sys/types.h>
 #include <stdlib.h>
@@ -13,6 +13,7 @@ typedef ssize_t (*stream_read_t )(void * ctx, void       * buf, size_t nbyte, st
 typedef ssize_t (*stream_write_t)(void * ctx, const void * buf, size_t nbyte, stream_error_t *error);
 typedef ssize_t (*stream_pipe_t )(void * ctx, void       * dest,              stream_error_t *error);
 typedef ssize_t (*stream_close_t)(void * ctx, stream_error_t *error);
+
 typedef struct {
   void *   ctx;
   stream_read_t   read;

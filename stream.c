@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 
 #include <sys/types.h>
 #include <stdlib.h>
@@ -8,7 +9,6 @@
 #include <stdarg.h>
 #include <string.h>
 #include <strings.h>
-#define _GNU_SOURCE
 #include <stdio.h>
 
 typedef struct {
@@ -75,7 +75,7 @@ ssize_t stream_pipe(stream_t * from, stream_t * to) {
     return from->pipe(from->ctx, to->ctx, &from->error);
   }
 
-  size_t page_size = getpagesize();
+  size_t page_size = sysconf(_SC_PAGESIZE);
   char * buffer = malloc(page_size);
 
   ssize_t len = 0;
