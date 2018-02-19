@@ -7,5 +7,3 @@
   "license": "MIT",
   "src": ["stream.module.c", "file.module.c", "stream.c", "stream.h", "file.c", "file.h"]
 }
-
-
