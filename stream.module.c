@@ -1,4 +1,3 @@
-#define _GNU_SOURCE
 export {
 #include <sys/types.h>
 #include <stdlib.h>
@@ -106,16 +105,19 @@ export ssize_t pipe(stream_t * from, stream_t * to) {
 export ssize_t printf(stream_t * s, char * fmt, ...) {
   va_list args;
   va_start(args, fmt);
-  char * buf;
+  char * buf = NULL;
   ssize_t length = vasprintf(&buf, fmt, args);
 
   if (length < 0) {
     s->error.code    = errno;
     s->error.message = strerror(s->error.code);
+	free(buf);
     return length;
   }
 
-  return write(s, buf, length);
+  length = write(s, buf, length);
+  free(buf);
+  return length;
 }
 
 export ssize_t close(stream_t * s) {
