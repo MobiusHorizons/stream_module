@@ -127,5 +127,7 @@ ssize_t stream_close(stream_t * s) {
 		return -1;
 	}
 
-	return s->close(s->ctx, &s->error);
+	ssize_t e = s->close(s->ctx, &s->error);
+	if (e != -1) free(s);
+	return e;
 }

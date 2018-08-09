@@ -127,5 +127,7 @@ export ssize_t close(stream_t * s) {
 		return -1;
 	}
 
-	return s->close(s->ctx, &s->error);
+	ssize_t e = s->close(s->ctx, &s->error);
+	if (e != -1) global.free(s);
+	return e;
 }
