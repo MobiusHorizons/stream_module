@@ -1,3 +1,4 @@
+#define _package_file_
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -48,6 +49,21 @@ static ssize_t file_close(void * ctx, stream_error_t * error) {
 	return e;
 }
 
+/**
+ * Frees all resources held by the file, and returns the file
+ * descriptor.
+ */
+int file_free(stream_t * s) {
+	if (s->type != file_type()) {
+		errno = EINVAL;
+		return -1;
+	}
+
+	int fd = *(int*)s->ctx;
+	free(s->ctx);
+	free(s);
+	return fd;
+}
 
 stream_t * file_new(int fd) {
 	int * descriptor = malloc(sizeof(int));

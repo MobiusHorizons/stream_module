@@ -48,6 +48,21 @@ static ssize_t file_close(void * ctx, stream.error_t * error) {
 	return e;
 }
 
+/**
+ * Frees all resources held by the file, and returns the file
+ * descriptor.
+ */
+export int free(stream.t * s) {
+	if (s->type != type()) {
+		errno = EINVAL;
+		return -1;
+	}
+
+	int fd = *(int*)s->ctx;
+	global.free(s->ctx);
+	global.free(s);
+	return fd;
+}
 
 export stream.t * new(int fd) {
 	int * descriptor = malloc(sizeof(int));
